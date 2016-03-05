@@ -8,12 +8,15 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 
 		public void onEnabled()
 		{
+			Debug.Log("Tiki Hut mod enabled!");
 			_go = new GameObject();
 
 			_go.AddComponent<TikiHutLoader>();
 			_go.GetComponent<TikiHutLoader>().Path = Path;
 			_go.GetComponent<TikiHutLoader>().Identifier = Identifier;
+			Debug.Log("Tiki Hut established, loading flat ride!");
 			_go.GetComponent<TikiHutLoader>().LoadFlatRide();
+			Debug.Log("Tiki Hut loaded!");
 		}
 
 		public void onDisabled()

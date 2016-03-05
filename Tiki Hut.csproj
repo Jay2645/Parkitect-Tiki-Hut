@@ -31,8 +31,9 @@
     <RootNamespace>Jungle_Cruise</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\Parkitect_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Desktop\Parkitect\Parkitect_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -56,10 +57,10 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FlatRideLoader.cs" />
+    <Compile Include="Generic Helpers\FlatRideLoader.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="TikiHut.cs" />
-    <Compile Include="TikiHutLoader.cs" />
+    <Compile Include="Tiki Hut\TikiHut.cs" />
+    <Compile Include="Tiki Hut\TikiHutLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

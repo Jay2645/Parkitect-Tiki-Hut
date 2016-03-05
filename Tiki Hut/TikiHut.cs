@@ -56,7 +56,7 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 		public override void onStartRide()
 		{
 			base.onStartRide();
-
+			Debug.Log("***OLE! OLE! IT'S CHO-TIME!***");
 			CurrentState = State.Running;
 		}
 

@@ -15,6 +15,7 @@ namespace ParkitectMods.FlatRides
 
 		public void LoadFlatRide()
 		{
+			Debug.Log("Loading " + this);
 			GameObject asset = LoadRideData();
 			SetWaypoints(asset);
 			asset.transform.position = new Vector3(0, 999, 0);
@@ -33,13 +34,14 @@ namespace ParkitectMods.FlatRides
 		{
 			_sceneryObjects.Add(flatRide);
 			flatRide.fenceGO = AssetManager.Instance.rideFenceGO;
-			flatRide.entranceGO = AssetManager.Instance.rideEntranceGO;
-			flatRide.exitGO = AssetManager.Instance.rideExitGO;
+			flatRide.entranceGO = AssetManager.Instance.attractionEntranceGO;
+			flatRide.exitGO = AssetManager.Instance.attractionExitGO;
 			flatRide.entranceExitBuilderGO = AssetManager.Instance.flatRideEntranceExitBuilderGO;
 			flatRide.price = price;
 			flatRide.excitementRating = excitement;
 			flatRide.intensityRating = intensity;
 			flatRide.nauseaRating = nausea;
+			flatRide.categoryTag = "Attractions/Flat Ride";
 			flatRide.setDisplayName(name);
 			flatRide.xSize = x;
 			flatRide.zSize = Z;
