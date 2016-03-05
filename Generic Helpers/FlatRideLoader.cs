@@ -96,7 +96,7 @@ namespace ParkitectMods.FlatRides
 				Debug.Log("Adding waypoints to " + asset);
 			}
 			Waypoints points = asset.GetComponent<Waypoints>();
-			float spacingAmount = 0.5f;
+			float spacingAmount = 1.0f;
 
 			Dictionary<KeyValuePair<float, float>, Waypoint> waypoints = new Dictionary<KeyValuePair<float, float>, Waypoint>();
 
@@ -106,7 +106,7 @@ namespace ParkitectMods.FlatRides
 				{
 					Waypoint wp = new Waypoint();
 					wp.localPosition = new Vector3(x, 0, y);
-					wp.isRabbitHoleGoal = x < 1.0f && y < 1.0f;
+					wp.isRabbitHoleGoal = x < 1.0f && y < 1.0f && x > -1.0f && y > -1.0f;
 					waypoints.Add(new KeyValuePair<float, float>(x, y), wp);
 
 					points.waypoints.Add(wp);
