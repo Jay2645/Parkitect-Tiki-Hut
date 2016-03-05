@@ -6,7 +6,8 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 	{
 		protected override GameObject LoadRideModel()
 		{
-			GameObject asset = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			//GameObject asset = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			GameObject asset = LoadAsset("Tiki Hut");
 			return asset;
 		}
 
@@ -25,6 +26,11 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 			});*/
 
 			BasicFlatRideSettings(tikiHut, "Magical Tiki Hut", 600, .8f, .2f, .1f, 6, 6);
+		}
+
+		protected override string GetAssetBundleName()
+		{
+			return "tiki";
 		}
 	}
 }

@@ -11,8 +11,8 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 			_go = new GameObject();
 
 			_go.AddComponent<TikiHutLoader>();
-			//_go.GetComponent<TikiHutLoader>().Path = Path;
-			//_go.GetComponent<TikiHutLoader>().Identifier = Identifier;
+			_go.GetComponent<TikiHutLoader>().Path = Path;
+			_go.GetComponent<TikiHutLoader>().Identifier = Identifier;
 			_go.GetComponent<TikiHutLoader>().LoadFlatRide();
 		}
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace ParkitectMods.FlatRides
@@ -7,12 +9,13 @@ namespace ParkitectMods.FlatRides
 	{
 		private List<BuildableObject> _sceneryObjects = new List<BuildableObject>();
 
-		//public string Path;
-		/*public string Identifier;*/
+		public string Path;
+		public string Identifier;
 		public FlatRide FlatRideComponent;
 
 		protected abstract GameObject LoadRideModel();
 		protected abstract void InitializeRideData(GameObject ride);
+		protected abstract string GetAssetBundleName();
 
 		public void LoadFlatRide()
 		{
@@ -50,7 +53,7 @@ namespace ParkitectMods.FlatRides
 			flatRide.zSize = Z;
 		}
 
-		/*public GameObject LoadAsset(string PrefabName)
+		public GameObject LoadAsset(string PrefabName)
 		{
 			try
 			{
@@ -58,7 +61,7 @@ namespace ParkitectMods.FlatRides
 
 				char dsc = System.IO.Path.DirectorySeparatorChar;
 
-				using (WWW www = new WWW("file://" + Path + dsc + "assetbundle" + dsc + "bumpercar"))
+				using (WWW www = new WWW("file://" + Path + dsc + "AssetBundles" + dsc + GetAssetBundleName()))
 				{
 					if (www.error != null)
 						throw new Exception("Loading had an error:" + www.error);
@@ -74,12 +77,13 @@ namespace ParkitectMods.FlatRides
 					catch (Exception e)
 					{
 						LogException(e);
-						return null;
+						//return null;
 					}
 					finally
 					{
 						bundle.Unload(false);
 					}
+					return null;
 				}
 			}
 			catch (Exception e)
@@ -87,12 +91,14 @@ namespace ParkitectMods.FlatRides
 				LogException(e);
 				return null;
 			}
-		}*/
+		}
 
 		public void SetWaypoints(GameObject asset, bool debug)
 		{
 			Waypoints points = asset.GetComponent<Waypoints>();
 			float spacingAmount = 1.0f;
+
+			Debug.Log(asset.GetComponentsInChildren<BoxCollider>().Length);
 
 			Dictionary<KeyValuePair<float, float>, Waypoint> waypoints = new Dictionary<KeyValuePair<float, float>, Waypoint>();
 
@@ -100,8 +106,13 @@ namespace ParkitectMods.FlatRides
 			{
 				for (float y = -2.5f; y <= 2.5f; y += spacingAmount)
 				{
+					Vector3 localPosition = new Vector3(x, 0, y);
+					if (Physics.Raycast(asset.transform.position + localPosition + (Vector3.up * 3.0f), Vector3.down, 3.0f))
+					{
+						continue;
+					}
 					Waypoint wp = new Waypoint();
-					wp.localPosition = new Vector3(x, 0, y);
+					wp.localPosition = localPosition;
 					wp.isRabbitHoleGoal = x < 1.0f && y < 1.0f && x > -1.0f && y > -1.0f;
 					waypoints.Add(new KeyValuePair<float, float>(x, y), wp);
 
@@ -162,7 +173,7 @@ namespace ParkitectMods.FlatRides
 						cubeRenderer.material.color = Color.red;
 					}
 					cube.transform.parent = asset.transform;
-					cube.transform.position = worldPosition;
+					cube.transform.position = worldPosition + (Vector3.up * 2.0f);
 				}
 			}
 		}
@@ -204,7 +215,7 @@ namespace ParkitectMods.FlatRides
 			}
 		}*/
 
-		/*private void LogException(Exception e)
+		private void LogException(Exception e)
 		{
 			StreamWriter sw = File.AppendText(Path + @"/mod.log");
 
@@ -213,7 +224,7 @@ namespace ParkitectMods.FlatRides
 			sw.Flush();
 
 			sw.Close();
-		}*/
+		}
 
 		public void UnloadScenery()
 		{
