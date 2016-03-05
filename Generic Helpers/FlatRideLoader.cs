@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace ParkitectMods.FlatRides
@@ -9,8 +7,8 @@ namespace ParkitectMods.FlatRides
 	{
 		private List<BuildableObject> _sceneryObjects = new List<BuildableObject>();
 
-		public string Path;
-		public string Identifier;
+		//public string Path;
+		/*public string Identifier;*/
 		public FlatRide FlatRideComponent;
 
 		protected abstract GameObject LoadRideModel();
@@ -18,10 +16,9 @@ namespace ParkitectMods.FlatRides
 
 		public void LoadFlatRide()
 		{
-			Debug.Log("Loading " + this);
 			GameObject asset = LoadRideModel();
 			asset.AddComponent<Waypoints>();
-			SetWaypoints(asset, true);
+			SetWaypoints(asset, false);
 			asset.transform.position = new Vector3(0, 999, 0);
 
 			InitializeRideData(asset);
@@ -30,7 +27,10 @@ namespace ParkitectMods.FlatRides
 			buildableObject.dontSerialize = true;
 			buildableObject.isPreview = true;
 
-			AssetManager.Instance.registerObject(asset.GetComponent<FlatRide>());
+			FlatRide flatRide = asset.GetComponent<FlatRide>();
+			AssetManager.Instance.registerObject(flatRide);
+
+			AddBoundingBox(asset, flatRide.xSize, flatRide.zSize);
 		}
 
 		public void BasicFlatRideSettings(FlatRide flatRide, string name, float price, float excitement, float intensity, float nausea, int x, int Z)
@@ -50,7 +50,7 @@ namespace ParkitectMods.FlatRides
 			flatRide.zSize = Z;
 		}
 
-		public GameObject LoadAsset(string PrefabName)
+		/*public GameObject LoadAsset(string PrefabName)
 		{
 			try
 			{
@@ -87,14 +87,10 @@ namespace ParkitectMods.FlatRides
 				LogException(e);
 				return null;
 			}
-		}
+		}*/
 
 		public void SetWaypoints(GameObject asset, bool debug)
 		{
-			if (debug)
-			{
-				Debug.Log("Adding waypoints to " + asset);
-			}
 			Waypoints points = asset.GetComponent<Waypoints>();
 			float spacingAmount = 1.0f;
 
@@ -111,11 +107,6 @@ namespace ParkitectMods.FlatRides
 
 					points.waypoints.Add(wp);
 				}
-			}
-
-			if (debug)
-			{
-				Debug.Log("Added " + points.waypoints.Count + " waypoints.");
 			}
 
 			foreach (KeyValuePair<KeyValuePair<float, float>, Waypoint> pair in waypoints)
@@ -176,7 +167,19 @@ namespace ParkitectMods.FlatRides
 			}
 		}
 
-		public void SetColors(GameObject asset, Color[] c)
+		public void AddBoundingBox(GameObject asset, float x, float z)
+		{
+			BoundingBox bb = asset.AddComponent<BoundingBox>();
+			bb.isStatic = false;
+			bb.layers = BoundingVolume.Layers.Buildvolume;
+			Bounds b = new Bounds();
+			b.center = new Vector3(0, 1, 0);
+			b.size = new Vector3(x - .01f, 2, z - .01f);
+			bb.setBounds(b);
+			bb.isStatic = true;
+		}
+
+		/*public void SetColors(GameObject asset, Color[] c)
 		{
 			CustomColors cc = asset.AddComponent<CustomColors>();
 			cc.setColors(c);
@@ -199,9 +202,9 @@ namespace ParkitectMods.FlatRides
 					break;
 				}
 			}
-		}
+		}*/
 
-		private void LogException(Exception e)
+		/*private void LogException(Exception e)
 		{
 			StreamWriter sw = File.AppendText(Path + @"/mod.log");
 
@@ -210,7 +213,7 @@ namespace ParkitectMods.FlatRides
 			sw.Flush();
 
 			sw.Close();
-		}
+		}*/
 
 		public void UnloadScenery()
 		{
@@ -221,10 +224,10 @@ namespace ParkitectMods.FlatRides
 			}
 		}
 
-		public Color ConvertColor(int r, int g, int b)
+		/*public Color ConvertColor(int r, int g, int b)
 		{
 			return new Color(r / 255f, g / 255f, b / 255f);
-		}
+		}*/
 	}
 }
 
