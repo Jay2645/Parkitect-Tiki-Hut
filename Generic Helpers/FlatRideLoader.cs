@@ -13,22 +13,25 @@ namespace ParkitectMods.FlatRides
 		public string Identifier;
 		public FlatRide FlatRideComponent;
 
+		protected abstract GameObject LoadRideModel();
+		protected abstract void InitializeRideData(GameObject ride);
+
 		public void LoadFlatRide()
 		{
 			Debug.Log("Loading " + this);
-			GameObject asset = LoadRideData();
-			SetWaypoints(asset);
+			GameObject asset = LoadRideModel();
+			asset.AddComponent<Waypoints>();
+			SetWaypoints(asset, true);
 			asset.transform.position = new Vector3(0, 999, 0);
 
-			BuildableObject buildableObject = asset.GetComponent<BuildableObject>();
+			InitializeRideData(asset);
 
+			BuildableObject buildableObject = asset.GetComponent<BuildableObject>();
 			buildableObject.dontSerialize = true;
 			buildableObject.isPreview = true;
 
 			AssetManager.Instance.registerObject(asset.GetComponent<FlatRide>());
 		}
-
-		protected abstract GameObject LoadRideData();
 
 		public void BasicFlatRideSettings(FlatRide flatRide, string name, float price, float excitement, float intensity, float nausea, int x, int Z)
 		{
@@ -86,30 +89,41 @@ namespace ParkitectMods.FlatRides
 			}
 		}
 
-		public void SetWaypoints(GameObject asset)
+		public void SetWaypoints(GameObject asset, bool debug)
 		{
+			if (debug)
+			{
+				Debug.Log("Adding waypoints to " + asset);
+			}
 			Waypoints points = asset.GetComponent<Waypoints>();
+			float spacingAmount = 0.5f;
 
 			Dictionary<KeyValuePair<float, float>, Waypoint> waypoints = new Dictionary<KeyValuePair<float, float>, Waypoint>();
 
-			for (float x = -2.5f; x <= 2.5f; x += 0.25f)
+			for (float x = -2.5f; x <= 2.5f; x += spacingAmount)
 			{
-				for (float y = -2.5f; y <= 2.5f; y += 0.25f)
+				for (float y = -2.5f; y <= 2.5f; y += spacingAmount)
 				{
-					Waypoint wp = new Waypoint() { localPosition = new Vector3(x, 0, y) };
-
+					Waypoint wp = new Waypoint();
+					wp.localPosition = new Vector3(x, 0, y);
+					wp.isRabbitHoleGoal = x < 1.0f && y < 1.0f;
 					waypoints.Add(new KeyValuePair<float, float>(x, y), wp);
 
 					points.waypoints.Add(wp);
 				}
 			}
 
+			if (debug)
+			{
+				Debug.Log("Added " + points.waypoints.Count + " waypoints.");
+			}
+
 			foreach (KeyValuePair<KeyValuePair<float, float>, Waypoint> pair in waypoints)
 			{
 				bool outer = false;
-				for (float x = -0.25f; x <= 0.25f; x += 0.25f)
+				for (float x = -spacingAmount; x <= spacingAmount; x += spacingAmount)
 				{
-					for (float y = -0.25f; y <= 0.25f; y += 0.25f)
+					for (float y = -spacingAmount; y <= spacingAmount; y += spacingAmount)
 					{
 						if (x == 0 && y == 0)
 						{
@@ -134,6 +148,31 @@ namespace ParkitectMods.FlatRides
 				}
 
 				pair.Value.isOuter = outer;
+			}
+
+			if (debug)
+			{
+				foreach (Waypoint waypoint in points.waypoints)
+				{
+					Vector3 worldPosition = waypoint.getWorldPosition(asset.transform);
+					GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					cube.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+					Renderer cubeRenderer = cube.GetComponent<Renderer>();
+					if (waypoint.isRabbitHoleGoal)
+					{
+						cubeRenderer.material.color = Color.green;
+					}
+					else if (waypoint.isOuter)
+					{
+						cubeRenderer.material.color = Color.yellow;
+					}
+					else
+					{
+						cubeRenderer.material.color = Color.red;
+					}
+					cube.transform.parent = asset.transform;
+					cube.transform.position = worldPosition;
+				}
 			}
 		}
 

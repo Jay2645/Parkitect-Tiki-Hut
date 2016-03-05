@@ -4,10 +4,16 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 {
 	public class TikiHutLoader : FlatRideLoader
 	{
-		protected override GameObject LoadRideData()
+		protected override GameObject LoadRideModel()
 		{
 			GameObject asset = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			return asset;
+		}
 
+		protected override void InitializeRideData(GameObject asset)
+		{
+			RabbitHole rabbitHole = asset.AddComponent<RabbitHole>();
+			rabbitHole.seatCount = 40;
 			TikiHut tikiHut = asset.AddComponent<TikiHut>();
 
 			/*SetColors(asset, new[]
@@ -19,7 +25,6 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 			});*/
 
 			BasicFlatRideSettings(tikiHut, "Magical Tiki Hut", 600, .8f, .2f, .1f, 6, 6);
-			return asset;
 		}
 	}
 }

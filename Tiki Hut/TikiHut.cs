@@ -12,11 +12,8 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 
 		[Serialized]
 		public State CurrentState;
-
 		[Serialized]
 		public float Time;
-
-		public AudioClip Tune;
 
 		public override void Start()
 		{
@@ -72,6 +69,11 @@ namespace ParkitectMods.FlatRides.MagicalTikiHut
 					Time = 0;
 				}
 			}
+		}
+
+		public override bool shouldLetGuestsIn(StationController stationController)
+		{
+			return CurrentState == State.Stopped;
 		}
 
 		public override bool shouldLetGuestsOut()
